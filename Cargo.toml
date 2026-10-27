@@ -1,0 +1,45 @@
+[package]
+name = "hypha-spore-wishlist"
+edition = "2024"
+version = "0.1.0"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/hyphacommerce/spore-wishlist"
+publish = false
+description = "A wishlist built into Hypha's API: the tutorial spore. Signed-in shoppers save products; staff see a customer's list in the admin."
+
+# A crate of its own, not part of a host's workspace.
+[workspace]
+
+# A spore depends on the facade only, and builds for wasm like every spore. Hypha comes
+# from git until its crates are published; Cargo.lock pins the commit.
+[dependencies]
+hypha-spore = { git = "https://github.com/hyphacommerce/hypha", branch = "main", features = ["postgres", "http"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+uuid = "1"
+
+[dev-dependencies]
+# The route tests (`tests/routes.rs`): a host built with the spore, on Postgres.
+hypha-host-axum = { git = "https://github.com/hyphacommerce/hypha", branch = "main", features = ["testing"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"
+
+# As in Hypha: password hashing is slow on purpose and far slower unoptimized, which
+# would make the test host's logins crawl.
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+debug = false
+
+[profile.dev.package.argon2]
+opt-level = 3
+
+[profile.dev.package.blake2]
+opt-level = 3

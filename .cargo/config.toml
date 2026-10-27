@@ -1,0 +1,8 @@
+# Fetch Hypha (a git dependency) with the git command line, so your git credentials work.
+[net]
+git-fetch-with-cli = true
+
+# The route tests' Postgres: Hypha's compose `postgres-test` (`docker compose up -d` in a
+# Hypha checkout). A variable in the environment wins.
+[env]
+HYPHA_TEST_DATABASE_URL = { value = "postgres://hypha:hypha@localhost:5433/hypha", force = false }
